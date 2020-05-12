@@ -13,32 +13,14 @@ import java.util.Map;
 
 public class Handle {
     private static Gson gson = new Gson();
+
     public static List<DataBean> getHandle() {
-        FileReader reader = null;
-        try {
-            reader = new FileReader("mess.txt");
-            char[] cReader = new char[1024];
-            StringBuilder sb = new StringBuilder();
-            int length = 0;
-            while ((length = reader.read(cReader)) > 0) {
-                sb.append(new String(cReader, 0, length));
-            }
-            Map totalMap = gson.fromJson(sb.toString(), Map.class);
-            String data = (String) totalMap.get("data");
-            return parseJSON(data);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return null;
-    }
+        String utlStr = "https://view.inews.qq.com/g2/getOnsInfo?name=disease_h5";
+        Map totalMap = gson.fromJson(HttpUrlConnectionUntil.sendUrl(utlStr), Map.class);
+        String data = (String) totalMap.get("data");
+        return parseJSON(data);
+}
+
     private static List<DataBean> parseJSON(String json) {
         List<DataBean> result = new ArrayList<>();
         Map dataMap = gson.fromJson(json, Map.class);

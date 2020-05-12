@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <table align="center" border="1" style="width: 60%; height: 60%;">
+        <thead>
+        <tr>
+            <th></th>
+            <th>地区</th>
+            <th>确诊</th>
+            <th>累计确诊</th>
+            <th>死亡</th>
+            <th>治愈</th>
+        </tr>
+        </thead>
+    <tbody>
+    <tr th:each="bean:${list}">
+        <td th:text="${beanStat.count}">index</td>
+        <td th:text="${bean.name}">地区</td>
+        <td th:text="${bean.confirm}">确诊</td>
+        <td th:text="${bean.nowConfirm}">累计确诊</td>
+        <td th:text="${bean.dead}">死亡</td>
+        <td th:text="${bean.heal}">治愈</td>
+    </tr>
+    </tbody>
+    </table>
+</body>
+</html>
