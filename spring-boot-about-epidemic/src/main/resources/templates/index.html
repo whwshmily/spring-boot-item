@@ -10,7 +10,7 @@
         <tr>
             <th></th>
             <th>地区</th>
-            <th>确诊</th>
+            <th>现有确诊</th>
             <th>累计确诊</th>
             <th>死亡</th>
             <th>治愈</th>
@@ -20,8 +20,8 @@
     <tr th:each="bean:${list}">
         <td th:text="${beanStat.count}">index</td>
         <td th:text="${bean.name}">地区</td>
-        <td th:text="${bean.confirm}">确诊</td>
-        <td th:text="${bean.nowConfirm}">累计确诊</td>
+        <td th:text="${bean.nowConfirm}">现有确诊</td>
+        <td th:text="${bean.confirm}">累计确诊</td>
         <td th:text="${bean.dead}">死亡</td>
         <td th:text="${bean.heal}">治愈</td>
     </tr>
