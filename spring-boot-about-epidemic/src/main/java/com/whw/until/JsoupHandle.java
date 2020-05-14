@@ -39,7 +39,7 @@ public class JsoupHandle {
                 double suspect = (double) map.get("suspectedCount");
                 double dead = (double) map.get("deadCount");
                 double heal = (double) map.get("curedCount");
-                DataBean b = new DataBean(name, "", (int) nowConfirm, (int) confirm, (int) suspect, (int) dead, (int) heal);
+                DataBean b = new DataBean(name, -1, (int) nowConfirm, (int) confirm, (int) suspect, (int) dead, (int) heal);
                 result.add(b);
             }
         } catch (IOException e) {

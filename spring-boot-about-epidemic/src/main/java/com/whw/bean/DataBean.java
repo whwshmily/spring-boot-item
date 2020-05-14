@@ -5,14 +5,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Data@AllArgsConstructor
 @NoArgsConstructor
 @TableName("illness")
-public class DataBean {
+public class DataBean implements Serializable{
     //城市/省份名字
     private String name;
-    //境外输入
-    private String tip;
+    //境外输入人数
+    private int tip;
     //现在确诊人数
     private int nowConfirm;
     //总共确诊人数

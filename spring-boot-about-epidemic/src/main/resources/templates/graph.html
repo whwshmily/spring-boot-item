@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<body lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" src="/echarts.min.js"></script>
+</head>
+
+<body>
+<!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+<div id="nowConfirm" style="width: 600px;height:400px;"></div>
+<div id="suspectAndConfirm" style="width: 600px;height:400px;"></div>
+<div id="totalConfirmAndHeadAndHeal" style="width: 600px;height:400px;"></div>
+<div id="deadRateAndHealRate" style="width: 600px;height:400px;"></div>
+<div id="importedCase" style="width: 600px;height:400px;"></div>
+<div id="importedCaseRate" style="width: 600px;height:400px;"></div>
+<div id="importedCount" style="width: 600px;height:400px;"></div>
+<script type="text/javascript" th:inline="javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('importedCount'));
+    var nameList = [[${nameList}]];
+    var countList = [[${countList}]];
+    // 指定图表的配置项和数据
+    var option = {
+        color: ['#0080FF','#5B5B00','#737300','#8C8C00','#A6A600','#C4C400',
+            '#E1E100','#F9F900','#FFFF37','#FFFF6F'],
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+            }
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        xAxis: [
+            {
+                type: 'category',
+                data: nameList,
+                axisTick: {
+                    alignWithLabel: true
+                }
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value'
+            }
+        ],
+        series: [
+            {
+                //name: '直接访问',
+                type: 'bar',
+                barWidth: '60%',
+                data: countList
+            }
+        ]
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+</script>
+<script type="text/javascript" th:inline="javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('importedCase'));
+    var dateList = [[${dateList}]];
+    var importedCaseList = [[${importedCaseList}]];
+    // 指定图表的配置项和数据
+    var option = {
+        title: {
+            text: '境外输入累计趋势'
+        },
+        tooltip: {
+            trigger:'axis'
+        },
+        legend: {
+            data:['']
+        },
+        xAxis: {
+            data: dateList
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [{
+            data: importedCaseList,
+            type:'line'
+        }]
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+</script>
+<script type="text/javascript" th:inline="javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('importedCaseRate'));
+    var dateList = [[${dateList}]];
+    var importedCaseRateList = [[${importedCaseRateList}]];
+    // 指定图表的配置项和数据
+    var option = {
+        title: {
+            text: '境外输入新增趋势'
+        },
+        tooltip: {
+            trigger:'axis'
+        },
+        legend: {
+            data:['']
+        },
+        xAxis: {
+            data: dateList
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [{
+            name: '境外输入新增趋势',
+            data: importedCaseRateList,
+            type:'line'
+        }]
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+</script>
+<script type="text/javascript" th:inline="javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('deadRateAndHealRate'));
+    var dateList = [[${dateList}]];
+    var deadRateList = [[${deadRateList}]];
+    var healRateList = [[${healRateList}]];
+    // 指定图表的配置项和数据
+    var option = {
+        title: {
+            text: '全国治愈率/病死率趋势'
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data: ['治愈率', '病死率']
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        toolbox: {
+            feature: {
+                saveAsImage: {}
+            }
+        },
+        xAxis: {
+
+            data: dateList
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [
+            {
+                name: '治愈率',
+                type: 'line',
+                data: healRateList
+            },
+            {
+                name: '病死率',
+                type: 'line',
+                data: deadRateList
+            }
+        ]
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+</script>
+<script type="text/javascript" th:inline="javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('totalConfirmAndHeadAndHeal'));
+    var dateList = [[${dateList}]];
+    var totalConfirm = [[${totalConfirm}]];
+    var totalDead = [[${totalDead}]];
+    var totalHeal = [[${totalHeal}]];
+    // 指定图表的配置项和数据
+    var option = {
+        title: {
+            text: '全国累计确诊/治愈/死亡趋势'
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data: ['累计确诊', '累计治愈','累计死亡']
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        toolbox: {
+            feature: {
+                saveAsImage: {}
+            }
+        },
+        xAxis: {
+
+            data: dateList
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [
+            {
+                name: '累计确诊',
+                type: 'line',
+                data: totalConfirm
+            },
+            {
+                name: '累计治愈',
+                type: 'line',
+                data: totalHeal
+            },
+            {
+                name: '累计死亡',
+                type: 'line',
+                data: totalDead
+            }
+        ]
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+</script>
+<script type="text/javascript" th:inline="javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('suspectAndConfirm'));
+    var dateList = [[${dateList}]];
+    var suspectList = [[${insertSuspectList}]];
+    var confirmList = [[${insertConfirmList}]];
+    // 指定图表的配置项和数据
+    var option = {
+        title: {
+            text: '全国疫情新增趋势'
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data: ['新增确诊', '新增疑似']
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        toolbox: {
+            feature: {
+                saveAsImage: {}
+            }
+        },
+        xAxis: {
+
+            data: dateList
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [
+            {
+                name: '新增确诊',
+                type: 'line',
+                data: confirmList
+            },
+            {
+                name: '新增疑似',
+                type: 'line',
+                data: suspectList
+            }
+        ]
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+</script>
+<script type="text/javascript" th:inline="javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('nowConfirm'));
+    var dateList = [[${dateList}]];
+    var nowConfirmList = [[${nowConfirmList}]];
+    // 指定图表的配置项和数据
+    var option = {
+        title: {
+            text: '全国现有确诊趋势'
+        },
+        tooltip: {
+            trigger:'axis'
+        },
+        legend: {
+            data:['现有确诊']
+        },
+        xAxis: {
+            data: dateList
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [{
+            name: '现有确诊',
+            data: nowConfirmList,
+            type:'line'
+        }]
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+</script>
+</body>
+</html>
