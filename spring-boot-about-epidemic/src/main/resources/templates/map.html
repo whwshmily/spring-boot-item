@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{list.title}">Title</title>
+    <script type="text/javascript" src="/echarts.js"></script>
+    <script type="text/javascript" src="/echarts-gl.js"></script>
+    <script type="text/javascript" src="/china.js"></script>
+</head>
+<body>
+    <label>
+        <a th:href="@{map(lan='zh-CN')}">中文</a>
+        <a th:href="@{map(lan='en-US')}">英文</a>
+    </label>
+    <ul>
+        <li th:text="#{list.test1}">1</li>
+        <li th:text="#{list.test2}">12</li>
+        <li th:text="#{list.test3}">123</li>
+        <li th:text="#{list.test4}">1234</li>
+    </ul>
+<div id="chinaMap" style="width: 1000px;height:800px; margin: 20px auto"></div>
+<script type="text/javascript" th:inline="javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('chinaMap'));
+    var list = [[${list}]];
+    // 指定图表的配置项和数据
+    var option = {
+        //backgroundColor: '#FFFFFF',
+        title: {
+            text: '全国地图疫情状况展示',
+            subtext: '仅供参考',
+            x:'center'
+        },
+        tooltip : {
+            trigger: 'item'
+        },
+        series: [{
+             name: '现有确诊',
+             type: 'map',
+             mapType: 'china',
+             roam: false,
+            label: {
+                normal: {
+                    position: 'center',
+                    show: true,
+                    textStyle: {
+                        color: 'rgba(0,0,0,0.4)'
+                    }
+                },
+                emphasis: {
+                    show: true
+                }
+            },
+            data:list
+        }]
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+</script>
+
+</body>
+</html>

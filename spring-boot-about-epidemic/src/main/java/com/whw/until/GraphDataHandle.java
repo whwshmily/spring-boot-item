@@ -8,6 +8,7 @@ import com.whw.bean.GraphBean;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class GraphDataHandle {
     private static Map handleData() {
@@ -16,18 +17,38 @@ public class GraphDataHandle {
         Map dataMap = gson.fromJson(dataJson, Map.class);
         String dataStr = (String) dataMap.get("data");
         Map dayMap = gson.fromJson(dataStr, Map.class);
-        System.out.println(dayMap);
+        //System.out.println(dayMap);
         return dayMap;
     }
-    public static ConfirmStatusBean handleNowConfirmStatus(){
+
+    public static List<ConfirmStatusBean> handleNowConfirmStatus() {
+        List<ConfirmStatusBean> list = new ArrayList<>();
         Map dayMap = handleData();
         Map map = (Map) dayMap.get("nowConfirmStatis");
-        double gat = (double) map.get("gat");
-        double imported = (double) map.get("import");
-        double province = (double) map.get("province");
-        ConfirmStatusBean bean = new ConfirmStatusBean(gat,imported,province);
-        return bean;
+        Set set = map.keySet();
+        for (Object o : set) {
+            double value = (double) map.get(o);
+            ConfirmStatusBean bean = new ConfirmStatusBean();
+            String key = (String) o;
+
+            switch (key) {
+                case "gat":
+                    key = "港澳台病例:"+value;
+                    break;
+                case "import":
+                    key = "境外输入病例:"+value;
+                    break;
+                case "province":
+                    key = "31省本土病例:"+value;
+                    break;
+            }
+            bean.setName(key);
+            bean.setValue(value);
+            list.add(bean);
+        }
+        return list;
     }
+
     public static List<GraphBean> handleOtherAboutGraph() {
         List<GraphBean> beanList = new ArrayList<>();
         Map dayMap = handleData();
@@ -79,6 +100,6 @@ public class GraphDataHandle {
     public static void main(String[] args) {
         System.out.println(handleNowConfirmStatus());
         //System.out.println(handleOtherAboutGraph());
-       // System.out.println(handleInsertSuspectAndConfirm());
+        // System.out.println(handleInsertSuspectAndConfirm());
     }
 }

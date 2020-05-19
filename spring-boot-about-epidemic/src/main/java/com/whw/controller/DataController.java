@@ -3,8 +3,10 @@ package com.whw.controller;
 import com.whw.bean.ConfirmStatusBean;
 import com.whw.bean.DataBean;
 import com.whw.bean.GraphBean;
+import com.whw.bean.MapBean;
 import com.whw.dao.DataMapper;
 import com.whw.service.dataServcie.BaseDataService;
+import com.whw.until.DataHandle;
 import com.whw.until.GraphDataHandle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,7 +16,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/data")
@@ -52,15 +56,18 @@ public class DataController {
     }
     @GetMapping("/pie")
     public String pie(Model model){
-        ConfirmStatusBean bean = GraphDataHandle.handleNowConfirmStatus();
-        double gat = bean.getGat();
-        double overseas   = bean.getOverseas();
-        double province = bean.getProvince();
-        model.addAttribute("gat",gat);
-        model.addAttribute("overseas",overseas);
-        model.addAttribute("province",province);
-        model.addAttribute("total",gat+overseas+province);
+        List<ConfirmStatusBean> list = GraphDataHandle.handleNowConfirmStatus();
+        Collections.sort(list);
+        model.addAttribute("list",list);
         return "pie";
+    }
+    @GetMapping("/map")
+    public String chinaMap(Model model){
+        List<MapBean> list = new ArrayList<>();
+        DataHandle.getHandle(list);
+        model.addAttribute("list",list);
+        System.out.println(list);
+        return "map";
     }
 
     private void handleNowConfirm(Model model) {

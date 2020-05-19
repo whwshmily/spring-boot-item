@@ -8,6 +8,6 @@ import java.util.List;
 
 @Mapper
 public interface DataMapper {
-    @Select("select * from illness order by tip desc limit 0,9")
+    @Select("select * from illness order by tip desc limit 0,10")
     List<DataBean> findBytipDesc();
 }

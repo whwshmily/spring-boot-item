@@ -53,6 +53,6 @@ public class HttpUrlConnectionUntil {
     public static void main(String[] args) {
         //String s = sendUrl("https://view.inews.qq.com/g2/getOnsInfo?name=disease_h5");
         String s1 = sendUrl("https://ncov.dxy.cn/ncovh5/view/pneumonia?scene=2&from=singlemessage&isappinstalled=0");
-        System.out.println(s1);
+      //  System.out.println(s1);
     }
 }

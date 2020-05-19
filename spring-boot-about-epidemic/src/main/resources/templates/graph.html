@@ -22,6 +22,8 @@
     var countList = [[${countList}]];
     // 指定图表的配置项和数据
     var option = {
+        title:{
+           text: '境外输入人数TOP10'},
         color: ['#0080FF','#5B5B00','#737300','#8C8C00','#A6A600','#C4C400',
             '#E1E100','#F9F900','#FFFF37','#FFFF6F'],
         tooltip: {
@@ -52,7 +54,7 @@
         ],
         series: [
             {
-                //name: '直接访问',
+                name: '境外输入',
                 type: 'bar',
                 barWidth: '60%',
                 data: countList

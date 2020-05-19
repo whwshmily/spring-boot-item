@@ -11,14 +11,11 @@
 <script type="text/javascript" th:inline="javascript">
     // 基于准备好的dom，初始化echarts实例
     var myChart = echarts.init(document.getElementById('pie'));
-    var total = [[${total}]];
-    var gat = [[${gat}]];
-    var overseas = [[${overseas}]];
-    var province = [[${province}]];
+    var list = [[${list}]];
     // 指定图表的配置项和数据
     var option =  {
         title: {
-            text: '全国现有确诊构成:'+total+'例',
+            text: '全国现有确诊人数结构',
             left: 'center'
         },
         tooltip: {
@@ -35,11 +32,7 @@
                 type: 'pie',
                 radius: '55%',
                 center: ['50%', '60%'],
-                data: [
-                    {value: gat, name:'港澳台病例:'+gat},
-                    {value: province, name:'31省本土病例:'+province},
-                    {value: overseas, name:'境外输入病例:'+overseas}
-                ],
+                data: list,
                 emphasis: {
                     itemStyle: {
                         shadowBlur: 10,
