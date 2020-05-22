@@ -33,12 +33,12 @@ public class DataHandle {
 //        service.remove(null);
 //        service.saveBatch(dataBeans);
 //    }
-
-    @Scheduled(fixedDelay = 1000 * 60 * 60 * 8)
-    public void update() {
-        System.out.println("更新了");
-        //save();
-    }
+//
+//    @Scheduled(fixedDelay = 1000 * 60 * 60 * 8)
+//    public void update() {
+//        System.out.println("更新了");
+//        save();
+//    }
 
     public static List<DataBean> getHandle(List<MapBean> list) {
         String utlStr = "https://view.inews.qq.com/g2/getOnsInfo?name=disease_h5";
