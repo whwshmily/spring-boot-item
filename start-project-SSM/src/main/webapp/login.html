@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <link rel="stylesheet" type="text/css" href="css/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="css/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="css/demo.css">
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+</head>
+<body class="easyui-layout">
+<div data-options="region:'north',border:false" style="height:60px;background:#B3DFDA;padding:10px">
+    <img style="height: 58px;" src="images/logo.png">
+</div>
+<div data-options="region:'west',split:true,title:'West'" style="width:150px;padding:10px;">west content</div>
+<div data-options="region:'center',title:'Center'">
+    <input id="name" type="text">
+    <input id="password" type="password">
+    <input value="提交" type="button" onclick="login()">
+</div>
+<script>
+    function login() {
+        var name = $("#name").val();
+        var password = $("#password").val();
+        $.ajax({
+            url:"staff/login",
+            data:{"name":name,"password":password},
+            type:"post",
+            success:function (data) {
+                if (data){
+                    alert("欢迎"+data.staff_name);
+                    window.location.href="full.html";
+                }else {
+                    alert("用户名或密码错误");
+                }
+            },
+            error:function () {
+                alert("出错了，请联系管理员，errorCode：01110");
+            }
+
+
+        })
+    }
+</script>
+</body>
+</html>

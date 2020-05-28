@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>Full Layout - jQuery EasyUI Demo</title>
+	<title>任务详情页</title>
 	<link rel="stylesheet" type="text/css" href="css/themes/default/easyui.css">
 	<link rel="stylesheet" type="text/css" href="css/themes/icon.css">
 	<link rel="stylesheet" type="text/css" href="css/demo.css">
@@ -12,10 +12,233 @@
 	<script type="text/javascript" src="js/jquery.fullcalendar.js?v=0.7"></script>
 </head>
 <body class="easyui-layout">
-	<div data-options="region:'north',border:false" style="height:60px;background:#B3DFDA;padding:10px">north region</div>
-	<div data-options="region:'west',split:true,title:'West'" style="width:150px;padding:10px;">west content</div>
-	<div data-options="region:'center',title:'Center'">
-		<div class="easyui-fullCalendar" fit="true"></div>
+	<div data-options="region:'north',border:false" style="height:60px;background:#B3DFDA;padding:10px">
+		<img style="height: 100%" src="images/logo.png"></div>
+	<div data-options="region:'west',split:true,title:'菜单',
+		 hideExpandTool:true,
+		 expandMode:null,
+		 collapsed:true,
+		 collapsedSize:100,
+		 hideCollapsedContent:false,
+		 collapsedContent:function(){return $('#menubar')}
+		 "style="width:150px;padding:10px;">
+
 	</div>
+	<div data-options="region:'center',title:'Center'">
+		<!--<div class="easyui-layout">-->
+			<!--<div  data-options="region:'west',split:true">&lt;!&ndash;当天任务&ndash;&gt;-->
+				<table id="currentDayTaskTable" class="easyui-datagrid" title="当天任务"></table>
+			<!--</div>-->
+			<!--<div  data-options="region:'center',split:true">-->
+				<!--当月任务-->
+				<table id="currentMonthTaskTable" class="easyui-datagrid" title="当月任务"></table>
+			<!--</div>-->
+			<!--<div  data-options="region:'south',split:true">-->
+				<!--日历-->
+				<div class="easyui-fullCalendar" fit="true"></div>
+			<!--</div>-->
+		<!--</div>-->
+
+	</div>
+	<!--左边菜选项-->
+<div id="menubar" style="padding: 2px;">
+	<a onclick="" class="easyui-linkbutton" style="width: 100%;" ></a>
+	<a onclick="sendTask()" class="easyui-linkbutton" style="width: 100%;" data-options="iconCls:'icon-man' ,size:'large',iconAlign:'top'">任务派发</a>
+	<a href="singleTask.html" class="easyui-linkbutton" style="width: 100%;" data-options="iconCls:'icon-large-picture',size:'large',iconAlign:'top'">个人查询</a>
+	<a href="graph.html" class="easyui-linkbutton" style="width: 100%;" data-options="iconCls:'icon-large-chart',size:'large',iconAlign:'top'">统计报表</a>
+	<a onclick="alert('别点我')" class="easyui-linkbutton" style="width: 100%;" data-options="iconCls:'icon-large-shapes',size:'large',iconAlign:'top'">权限设置</a>
+</div>
+	<div id="task_buttons" >
+		<a href="javascript:save()" class="easyui-linkbutton"  data-options="iconCls:'icon-ok'"></a>
+		<a  class="easyui-linkbutton"  data-options="iconCls:'icon-cancel'" onclick="$('#taskDlg').dialog('close')"></a>
+	</div>
+<div id="taskDlg" class="easyui-dialog" style="width: 600px; height: 350px;" closed="true" buttons="#task_buttons">
+	<table>
+		<tr>
+			<td>任务接收人：</td>
+			<td><input id="receiveStaff" type="text" style="width: 100px;"></td>
+		</tr>
+		<tr>
+			<td>任务时间：</td>
+			<td><input id="info_create_time" type="text" readonly="readonly"></td>
+		</tr>
+		<tr>
+			<td>任务名字：</td>
+			<td><input id="info_name" type="text"></td>
+		</tr>
+		<tr>
+			<td>任务描述：</td>
+			<td><textarea id="info_desc" rows="5" cols="20"></textarea></td>
+		</tr>
+		<tr>
+			<td>任务级别：</td>
+			<td><input id="info_level" type="text" style="width: 100px"></td>
+		</tr>
+		<tr>
+			<td>任务状态：</td>
+			<td><input id="info_status" type="text" style="width: 100px;"></td>
+		</tr>
+	</table>
+</div>
+<script>
+	var temp = 0;
+	function sendTask() {
+        $('#receiveStaff').combotree({
+            url:'staff/findAllDeptStaff',
+            cascadeCheck:false,
+            onlyLeafCheck:false,
+            required: true
+        });
+        $("#taskDlg").dialog('open').dialog("setTitle","<span style='font-size:16px;font-family: 微软雅黑'>编写任务信息</span>");
+        	var date = new Date();
+        	var strDate = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+        $("#info_create_time").val(strDate);
+    }
+	function save() {
+	    if (temp == 1) return;
+	    temp =1;
+        var info_create_time	= $("#info_create_time").val();
+        var info_name	= $("#info_name").val();
+        var info_desc	= $("#info_desc").val();
+		var info_level	= $("#info_level").combobox("getValue");
+		var receive	= $("#receiveStaff").next().find("input[type=hidden]").val();
+		var info_status	= $("#info_status").next().find("input[type=hidden]").val();
+		if(info_create_time ==''||info_name == '' ||info_desc == '' || info_level == ''
+			 || info_status == ''){
+		    alert("请填写完整的信息");
+            return;
+        }
+		if (receive == undefined){
+		    receive = -1;
+		}
+		$.ajax({
+			url:"info/add",
+			data:{"info_create_time":info_create_time,
+				  "info_name":info_name,
+				  "info_desc":info_desc,
+				  "level_id":Number(info_level),
+				  "status_id":Number(info_status),
+				  "staff_id":receive
+			},
+			type:"post",
+			success:function (data) {
+			    temp = 0;
+				alert(data);
+				if (data=='success'){
+				    window.location.reload();
+				}
+            },
+			error:function () {
+			    temp = 0;
+				alert("哎呀，一不小心服务器走失了!!!")
+            }
+		})
+    }
+
+
+    $(function () {
+        $('#info_level').combobox({
+            url:'task/level',
+            valueField:'level_id',
+            textField:'level_name'
+        });
+        $('#info_status').combobox({
+            url:'task/status',
+            valueField:'status_id',
+            textField:'status_name'
+        });
+        $('#currentDayTaskTable').datagrid({
+            url:'info/currentDayTaskInfo',
+			method:"post",
+            fitColumns:true,
+            striped:true,
+            pagination:true,
+            rownumbers:true,
+
+            columns:[[
+                {field:'info_name',title:'任务名字'},
+                {field:'info_desc',title:'任务描述'},
+                {field:'level',title:'任务等级',formatter:function (value, row, index) {
+                        if (row) {
+                            return row.level.level_name;
+                        } else {
+                            return row.level;
+                        }
+                    }
+				},
+				{field:'status',title:'任务状态',formatter:function (value, row, index) {
+                        if (row) {
+                            return row.status.status_name;
+                        } else {
+                            return row.status;
+                        }
+                    }
+				},
+                {field:'staff',title:'任务派发人',formatter:function (value, row, index) {
+                        if (row){
+                            return row.staff.staff_name;
+                        }else {
+                            return row.sendStaff;
+                        }
+
+					}},
+                {field:'staffList',title:'任务接收人',formatter:function (value, row, index) {
+                    if (row){
+							return row.staffList.staff_name;
+						}else {
+                        return row.staffList;
+						}
+                    }},
+                {field:'info_create_time',title:'任务创建时间',align:'left'}
+            ]]
+        });
+        $('#currentMonthTaskTable').datagrid({
+            url:'info/currentMonthTaskTable',
+			method:"post",
+            fitColumns:true,
+            striped:true,
+            pagination:true,
+            rownumbers:true,
+            columns:[[
+                {field:'info_name',title:'任务名字'},
+                {field:'info_desc',title:'任务描述'},
+                {field:'level',title:'任务等级',formatter:function (value, row, index) {
+                        if (row) {
+                            return row.level.level_name;
+                        } else {
+                            return row.level;
+                        }
+                    }
+				},
+                {field:'status',title:'任务状态'
+                    ,formatter:function (value, row, index) {
+                        if (row) {
+                            return row.status.status_name;
+                        } else {
+                            return row.status;
+                        }
+                    }
+				},
+                {field:'staff',title:'任务派发人',formatter:function (value, row, index) {
+                        if (row) {
+                            return row.staff.staff_name;
+                        } else {
+                            return row.staff;
+                        }
+                    }
+				},
+                {field:'staffList',title:'任务接收人',formatter:function (value, row, index) {
+                        if (row) {
+                            return row.staffList.staff_name;
+                        } else {
+                            return row.staffList;
+                        }
+                    }
+				},
+                {field:'info_create_time',title:'任务创建时间',align:'left'}
+            ]]
+        });
+    })
+</script>
 </body>
 </html>

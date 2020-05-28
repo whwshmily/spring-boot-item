@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>个人当月任务详情页</title>
+    <link rel="stylesheet" type="text/css" href="css/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="css/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="css/demo.css">
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script src="js/jquery-migrate-1.2.1.min.js"></script>
+    <script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="js/jquery.fullcalendar.js?v=0.7"></script>
+</head>
+<body class="easyui-layout">
+<script>
+    $(function () {
+       $("#selectBtn").click(function () {
+           $('#testTable').datagrid({
+               url:'info/currentMonthTaskTable',
+               method:"post",
+               fitColumns:true,
+               pagination:true,
+               rownumbers:true,
+
+               columns:[[
+                   {field:'info_name',title:'任务名字'},
+                   {field:'info_desc',title:'任务描述'},
+                   {field:'level',title:'任务等级',formatter:function (value, row, index) {
+                           if (row) {
+                               return row.level.level_name;
+                           } else {
+                               return row.level;
+                           }
+                       }
+                   },
+                   {field:'status',title:'任务状态',formatter:function (value, row, index) {
+                           if (row) {
+                               return row.status.status_name;
+                           } else {
+                               return row.status;
+                           }
+                       }
+                   },
+                   {field:'staff',title:'任务派发人',formatter:function (value, row, index) {
+                           if (row){
+                               return row.staff.staff_name;
+                           }else {
+                               return row.sendStaff;
+                           }
+
+                       }},
+                   {field:'staffList',title:'任务接收人',formatter:function (value, row, index) {
+                           if (row){
+                               return row.staffList.staff_name;
+                           }else {
+                               return row.staffList;
+                           }
+                       }},
+                   {field:'info_create_time',title:'任务创建时间',align:'left'}
+               ]]
+           });
+       });
+    });
+
+
+    $(function () {
+        $("#exportBtn").click(function () {
+            $.ajax({
+                url:"info/exportExcel",
+                type:"post",
+                data:{},
+                success:function (data) {
+
+                }
+            })
+        });
+    })
+</script>
+<div data-options="region:'west',title:''"  style="width: 100px;"></div>
+<div data-options="region:'center',title:'Center'"  >
+
+    <div id="singleTaskExcel" style="margin: 30px 0px 300px 0px">
+        <a id="selectBtn" class="easyui-linkbutton" >查询</a>
+        <a id="deleteBtn" class="easyui-linkbutton" >删除</a>
+        <a id="exportBtn" class="easyui-linkbutton" >导出</a>
+        <table class="easyui-datagrid" id="testTable" style="border: none;"></table>
+    </div>
+
+
+
+</div>
+
+</body>
+</html>

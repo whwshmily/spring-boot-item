@@ -845,15 +845,35 @@
 		
 		var t = $('<table cellspacing="0" cellpadding="0" border="0"><thead></thead><tbody></tbody></table>').prependTo(body);
 		var tr = $('<tr></tr>').appendTo(t.find('thead'));
-		for (var i = opts.firstDay; i < opts.weeks.length; i++) {
-			tr.append('<th>' + opts.weeks[i] + '</th>');
-		}
-		for (var i = 0; i < opts.firstDay; i++) {
-			tr.append('<th>' + opts.weeks[i] + '</th>');
-		}
-		
+		// for (var i = opts.firstDay; i < opts.weeks.length; i++) {
+		// 	tr.append('<th>' + opts.weeks[i] + '</th>');
+		// }
+		// for (var i = 0; i < opts.firstDay; i++) {
+		// 	tr.append('<th>' + opts.weeks[i] + '</th>');
+		// }
+		//======
+        tr.append('<th>星期天</th>');
+        tr.append('<th>星期一</th>');
+        tr.append('<th>星期二</th>');
+        tr.append('<th>星期三</th>');
+        tr.append('<th>星期四</th>');
+        tr.append('<th>星期五</th>');
+        tr.append('<th>星期六</th>');
+		//=====
 		var weeks = getWeeks(target, opts.year, opts.month);
 		var currentCa = new Calendar(opts.year, opts.month - 1);
+		//我写的
+		var data = null;
+		$.ajax({
+			url:"info/findTaskInfoByYearAndMonth",
+			data:{"year":opts.year,"month":opts.month},
+			type:"post",
+			async:false,
+			success:function (taskInfo) {
+				data = taskInfo;
+            }
+		});
+		//===
 		for (var i = 0; i < weeks.length; i++) {
 			var week = weeks[i];
 			var tr = $('<tr></tr>').appendTo(t.find('tbody'));
@@ -877,34 +897,74 @@
 						}
 					}
 				}
-				var day = $('<td class="calendar-day fullcalendar-day calendar-other-month"></td>').data('info', info).attr('abbr', day[0] + ',' + day[1] + ',' + day[2]).html(dayHtml).appendTo(tr);
-				if (info && (info.lunarFestival || info.solarFestival)) {
-					day.addClass('festival');
-				}
-				day.hover(function (e) {
-					clearTimeout(hideTimer);
-					var inf = $(this).data('info');
-					if (inf) {
-						var ct = '<font color="#ffffff" style="font-size:9pt;">' + inf.sYear
-							 + ' 年 ' + inf.sMonth + ' 月 ' + inf.sDay + ' 日<br>星期' + inf.week
-							 + '<br><font color="violet">农历 ' + monthName[inf.lMonth - 1] + ' 月 ' + cDay(inf.lDay, inf.lMonth,true)
-							 + ' 日</font><br><font color="yellow">' + inf.cYear + '年 ' + inf.cMonth + '月 ' + inf.cDay + '日</font></font>';
-						detail.html(ct);
-						detail.css(calculatePos.call(target, detail, e.currentTarget)).fadeIn();
-						if (inf.lunarFestival) {
-							detail.append('<div class="lunarFestival">' + inf.lunarFestival + '</div>');
-						}
-						if (inf.solarFestival) {
-							detail.append('<div class="solarFestival">' + inf.solarFestival + '</div>');
-						}
-					} else {
-						detail.hide();
+
+				var taskDate = day[0]+'-'+day[1]+'-'+day[2];
+				var count  = 1;
+                var color ;
+				for(var o = 0;o<data.length;o++){
+					var task = data[o];
+					var level_id = task.level.level_id;
+                    if (level_id == 1){
+                    	color = 'red';
+					}else if(level_id == 2){
+                    	color = 'green';
+					}else if(level_id == 3){
+                    	color = 'gray';
+					}else if(level_id == 4){
+                    	color = 'black';
+					}else {
+                    	color = 'blue';
 					}
-				}, function () {
-					hideTimer = setTimeout(function () {
-							$('div.fullcalendar-detail').hide();
-						}, 500);
-				});
+					if (task.info_create_time == taskDate){
+						var info = task.info_name;
+						if (info.length>10){
+							info = info.substring(0,10)+'...';
+						}
+						dayHtml += "<br/><div><font color='"+color+"'>"+count+":"+ info+"</font></div>";
+						count++
+					}
+				}
+
+                var day = $('<td class="calendar-day fullcalendar-day calendar-other-month"></td>').data('info', info).attr('abbr', day[0] + ',' + day[1] + ',' + day[2]).html(dayHtml).appendTo(tr);
+
+				// if (info && (info.lunarFestival || info.solarFestival)) {
+				// 	day.addClass('festival');
+				// }
+				//@whw 注释鼠标移动事件 添加鼠标双击事件
+				// day.hover(function (e) {
+				// 	clearTimeout(hideTimer);
+				// 	var inf = $(this).data('info');
+				// 	if (inf) {
+				// 		var ct = '<font color="#ffffff" style="font-size:9pt;">' + inf.sYear
+				// 			 + ' 年 ' + inf.sMonth + ' 月 ' + inf.sDay + ' 日<br>星期' + inf.week
+				// 			 + '<br><font color="violet">农历 ' + monthName[inf.lMonth - 1] + ' 月 ' + cDay(inf.lDay, inf.lMonth,true)
+				// 			 + ' 日</font><br><font color="yellow">' + inf.cYear + '年 ' + inf.cMonth + '月 ' + inf.cDay + '日</font></font>';
+				// 		detail.html(ct);
+				// 		detail.css(calculatePos.call(target, detail, e.currentTarget)).fadeIn();
+				// 		if (inf.lunarFestival) {
+				// 			detail.append('<div class="lunarFestival">' + inf.lunarFestival + '</div>');
+				// 		}
+				// 		if (inf.solarFestival) {
+				// 			detail.append('<div class="solarFestival">' + inf.solarFestival + '</div>');
+				// 		}
+				// 	} else {
+				// 		detail.hide();
+				// 	}
+				// }, function () {
+				// 	hideTimer = setTimeout(function () {
+				// 			$('div.fullcalendar-detail').hide();
+				// 		}, 500);
+				// });
+				//鼠标双击事件
+				day.dblclick(function () {
+                    var day = $(this).attr("abbr");
+                    day = day.replace(/,/g,'-');
+                    // alert(inf.sYear + ' 年 ' + inf.sMonth + ' 月 ' + inf.sDay + ' 日');
+					$("#taskDlg").dialog('open').dialog("setTitle","<span style='font-size:16px;font-family: 微软雅黑'>编写任务信息</span>");
+                    $("#info_create_time").val(day);
+                    // $("#receiveStaff").val("");
+
+                })
 			}
 		}
 		t.find('td[abbr^="' + opts.year + ',' + opts.month + '"]').removeClass('calendar-other-month');
