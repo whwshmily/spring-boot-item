@@ -8,12 +8,17 @@ import com.whw.dao.DataMapper;
 import com.whw.service.dataServcie.BaseDataService;
 import com.whw.until.DataHandle;
 import com.whw.until.GraphDataHandle;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,12 +27,14 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/data")
+@Api(tags="地图展示",description = "查看")
 public class DataController {
     @Autowired
     private BaseDataService service;
     @Autowired
     private DataMapper mapper;
     @GetMapping
+    @ApiIgnore
     public String getData(Model model) {
         model.addAttribute("list", service.list());
         return "index";
@@ -39,6 +46,8 @@ public class DataController {
 //        return "index";
 //    }
     @GetMapping("/graph")
+    @ApiOperation("查看地图")
+    @ApiImplicitParam(name="",value = "")
     public String graph(Model model) {
         handleNowConfirm(model);
         handleInsertSuspectAndConfirm(model);

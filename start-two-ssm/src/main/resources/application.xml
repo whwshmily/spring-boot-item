@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+        xmlns="http://www.springframework.org/schema/beans"
+        xmlns:tx="http://www.springframework.org/schema/tx"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd
+
+">
+<context:component-scan base-package="com.whw"/>
+<!--    datasource-->
+    <bean id="datasource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/book_store?serverTimezone=UTC&amp;useUnicode=true&amp;characterEncoding=UTF-8"/>
+        <property name="username" value="root"/>
+        <property name="password" value="root"/>
+    </bean>
+<!--   sessionFactory -->
+    <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="datasource"/>
+<!--        <property name="mapperLocations" value="classpath: *xml"/>-->
+    </bean>
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.whw.dao"/>
+        <property name="sqlSessionFactoryBeanName" value="sessionFactory"/>
+    </bean>
+
+<!--事务-->
+<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    <property name="dataSource" ref="datasource"/>
+</bean>
+<!--<tx:annotation-driven transaction-manager="transactionManager"/>-->
+<tx:advice id="tx:advice" transaction-manager="transactionManager">
+    <tx:attributes>
+        <tx:method name="save*" propagation="REQUIRED" no-rollback-for="java.lang.Exception"/>
+        <tx:method name="insert*" propagation="REQUIRED" no-rollback-for="java.lang.Exception"/>
+        <tx:method name="add*" propagation="REQUIRED" no-rollback-for="java.lang.Exception"/>
+        <tx:method name="delete*" propagation="REQUIRED" no-rollback-for="java.lang.Exception"/>
+        <tx:method name="update*" propagation="REQUIRED" no-rollback-for="java.lang.Exception"/>
+        <tx:method name="*" read-only="true"/>
+    </tx:attributes>
+</tx:advice>
+<aop:config>
+    <aop:advisor advice-ref="tx:advice" pointcut="execution(* com.whw.service.*.*(..))"/>
+</aop:config>
+
+</beans>

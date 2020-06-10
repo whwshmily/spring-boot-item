@@ -6,6 +6,7 @@ import com.whw.bean.DataBean;
 import com.whw.bean.MapBean;
 import com.whw.service.dataServcie.BaseDataService;
 import com.whw.service.dataServcie.DataServiceImpl;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class DataHandle {
+public class DataHandle{
 
     @Autowired
     private BaseDataService service;
